@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
+
+// Libraries
+import to from 'await-to-js';
 import Peer from 'peerjs';
+
+// Styles
+import styles from './Styles';
 
 let peer = null;
 let conn = null;
+let call = null;
 
 class App extends Component {
   constructor(props) {
@@ -11,10 +18,13 @@ class App extends Component {
     this.state = {
       joinText: null,
       lastPeerId: null,
+      buildAnswerButton: null,
     };
 
     this.sendMessage = this.sendMessage.bind(this);
     this.connectPatientToPeer = this.connectPatientToPeer.bind(this);
+    this.startCall = this.startCall.bind(this);
+    this.answerCall = this.answerCall.bind(this);
   }
 
   componentDidMount() {
@@ -30,6 +40,49 @@ class App extends Component {
 
   }
 
+  //#region functions
+  isDoctor() {
+    return process.env.REACT_APP_ROL === 'doctor';
+  }
+
+  async connectMediaDevices() {
+    return new Promise((resolve, reject) => {
+      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+      if (!navigator.getUserMedia) {
+        return reject('getUserMedia not supported');
+      }
+
+      const mediaParams = {
+        audio: true,
+        // video: {
+        //   width: 1280, 
+        //   height: 720,
+        // }
+      };
+
+      return navigator.getUserMedia(mediaParams,
+        (stream) => {
+          resolve(stream);
+        },
+        (err) => {
+          console.log('64 err >>> ', err);
+          reject(`The following error occurred: ${err.message}`);
+        });
+    });
+  }
+
+  loadAudioStream(stream) {
+    var audio = document.querySelector('audio');
+    audio.src = window.URL.createObjectURL(stream);
+    audio.onloadedmetadata = (e) => {
+      console.log('79 e >>> ', e);
+      console.log('now playing the audio');
+      audio.play();
+    };
+  }
+  //#endregion functions
+
   //#region Actions
   sendMessage() {
     if (!conn) {
@@ -39,22 +92,62 @@ class App extends Component {
     const isDoctor = this.isDoctor();
     conn.send(`Mensaje de ${isDoctor ? 'doctor' : 'paciente'}`);
   }
-  //#endregion Actions
 
-  //#region functions
-  isDoctor() {
-    return process.env.REACT_APP_ROL === 'doctor';
+  connectPatientToPeer() {
+    if (!this.state.joinText) {
+      alert('Por favor digite el id de la conexión generado desde el lado del doctor');
+      return;
+    }
+
+    conn = peer.connect(this.state.joinText, { label: 'Patient Connection', reliable: true });
+    this.connectionListeners();
   }
 
+  async startCall() {
+    const [error, stream] = await to(this.connectMediaDevices());
+    if (error) {
+      alert(error);
+      return;
+    }
+
+    if (!conn) {
+      return alert('Todavía no se ha establecido una conexión');
+    }
+
+    console.log('90 stream >>> ', stream);
+    console.log('91 conn >>> ', conn);
+
+    const patientPeer = conn.peer;
+    call = peer.call(patientPeer, stream);
+
+    this.callListener();
+  }
+
+  async answerCall() {
+    const [error, stream] = await to(this.connectMediaDevices());
+    if (error) {
+      alert(error);
+      return;
+    }
+
+    call.answer(stream);
+
+    this.callListener();
+  }
+  //#endregion Actions
+
+
+  //#region Listeners
   peerListeners() {
-    peer.on('connection', (connListener) => {
-      conn = connListener;
-      this.connectionListeners();
+    const me = this;
+    peer.on('connection', (connInfo) => {
+      conn = connInfo;
+      me.connectionListeners();
     });
 
     peer.on('open', (id) => {
       console.log('My peer ID is: ' + id);
-      let lastPeerId = this.state.lastPeerId;
+      let lastPeerId = me.state.lastPeerId;
 
       // Workaround for peer.reconnect deleting previous id
       if (peer.id === null) {
@@ -64,7 +157,12 @@ class App extends Component {
         lastPeerId = peer.id;
       }
 
-      this.setState({ lastPeerId });
+      me.setState({ lastPeerId });
+    });
+
+    peer.on('call', function (callInfo) {
+      call = callInfo;
+      me.setState({ buildAnswerButton: true });
     });
 
     peer.on('disconnected', function () {
@@ -72,7 +170,7 @@ class App extends Component {
 
       // Workaround for peer.reconnect deleting previous id
       // peer.id = lastPeerId; // Commented because cause an error releated with is only getter value
-      peer._lastServerId = this.state.lastPeerId;
+      peer._lastServerId = me.state.lastPeerId;
       peer.reconnect();
     });
 
@@ -86,7 +184,7 @@ class App extends Component {
     conn.on('open', () => {
       if (!isDoctor) {
         console.log('************ !!!PACIENTE CONECTADO AL DOCTOR!!!! *********** ');
-        conn.send('Hello!');
+        conn.send('Hola doctor, me he conectado');
       }
     });
 
@@ -98,7 +196,7 @@ class App extends Component {
         console.log('84 Mensaje recibido del doctor >>>>>>>>> ');
       }
 
-      console.log('88 data >>> ', data);
+      console.log(data);
     });
 
     conn.on('close', () => {
@@ -121,17 +219,40 @@ class App extends Component {
     });
   }
 
-  connectPatientToPeer() {
-    if (!this.state.joinText) {
-      alert('Por favor digite el id de la conexión generado desde el lado del doctor');
-      return;
-    }
+  callListener() {
+    const isDoctor = this.isDoctor();
+    const me = this;
 
-    conn = peer.connect(this.state.joinText, { label: 'Patient Connection', reliable: true });
-    this.connectionListeners();
+    call.on('stream', (stream) => {
+      if (isDoctor) {
+        console.log('210 Stream Doctor >>>>>>>>> ');
+      } else {
+        console.log('210 Stream Paciente >>>>>>>>> ');
+      }
+
+      console.log(stream);
+      me.loadAudioStream(stream);
+    });
+
+    call.on('close', () => {
+      if (isDoctor) {
+        console.log('210 CALL CLOSED Doctor >>>>>>>>> ');
+      } else {
+        console.log('210 CALL CLOSED Paciente >>>>>>>>> ');
+      }
+    });
+
+    call.on('error', (err) => {
+      if (isDoctor) {
+        console.log('210 CALL ERROR Doctor >>>>>>>>> ');
+      } else {
+        console.log('210 CALL ERROR Paciente >>>>>>>>> ');
+      }
+
+      console.log(err);
+    });
   }
-
-  //#endregion functions
+  //#endregion Listeners
 
   //#region Render Functions
   buildPatientConnectionForm() {
@@ -141,7 +262,12 @@ class App extends Component {
 
     return (
       <div style={{ margin: '20px' }}>
-        <input type="text" id="receiver-id" title="Peer ID desde el paciente" onChange={(e) => { this.setState({ joinText: e.target.value }); }} />
+        <input
+          type="text"
+          style={styles.joinText}
+          title="Peer ID desde el paciente"
+          onChange={(e) => { this.setState({ joinText: e.target.value }); }}
+        />
         <button id="connect-button" onClick={this.connectPatientToPeer}>{`Connectarse al doctor`}</button>
       </div>
     );
@@ -153,19 +279,42 @@ class App extends Component {
     }
 
     return (
-      <div style={{ margin: '20px' }}>
+      <div style={styles.buttons}>
         <label>{`Copiar en el paciente:`}</label>
         <label>{`ID: ${this.state.lastPeerId}`}</label>
       </div>
     );
   }
 
+  buildCallButton() {
+    if (!this.isDoctor()) {
+      return null;
+    }
+
+    return (
+      <button style={styles.buttons} onClick={this.startCall}>{`Llamar a paciente`}</button>
+    );
+  }
+
+  buildAnswerButton() {
+    if (!this.state.buildAnswerButton || this.isDoctor()) {
+      return null;
+    }
+
+    return (
+      <button style={styles.buttons} onClick={this.answerCall}>{`Contestar llamada del médico`}</button>
+    );
+  }
+
   render() {
     return (
-      <div style={{ width: '100%' }}>
+      <div style={styles.parentContainer}>
         {this.buildSessionIdLabel()}
         {this.buildPatientConnectionForm()}
-        <button onClick={this.sendMessage}>{`Enviar mensaje de prueba`}</button>
+        <button style={styles.buttons} onClick={this.sendMessage}>{`Enviar mensaje de prueba`}</button>
+        {this.buildCallButton()}
+        {this.buildAnswerButton()}
+        <audio controls></audio>
       </div>
     );
   }

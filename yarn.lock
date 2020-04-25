@@ -966,7 +966,7 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.3.4", "@babel/runtime@^7.4.5", "@babel/runtime@^7.5.1", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.4", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.3.4", "@babel/runtime@^7.4.5", "@babel/runtime@^7.5.1", "@babel/runtime@^7.6.0", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.4", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
   version "7.9.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.9.2.tgz#d90df0583a3a252f09aaa619665367bae518db06"
   integrity sha512-NE2DtOdufG7R5vnfQUTehdTfNycfUANEtCa9PssN9O/xmTzP4E08UI797ixaei6hBEVL9BI/PsdJS5x7mWoB9Q==
@@ -1335,7 +1335,7 @@
     "@svgr/plugin-svgo" "^4.3.1"
     loader-utils "^1.2.3"
 
-"@testing-library/dom@^6.15.0":
+"@testing-library/dom@^6.3.0":
   version "6.16.0"
   resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-6.16.0.tgz#04ada27ed74ad4c0f0d984a1245bb29b1fd90ba9"
   integrity sha512-lBD88ssxqEfz0wFL6MeUyyWZfV/2cjEZZV3YRpb2IoJRej/4f1jB0TzqIOznTpfR1r34CNesrubxwIlAQ8zgPA==
@@ -1348,7 +1348,7 @@
     pretty-format "^25.1.0"
     wait-for-expect "^3.0.2"
 
-"@testing-library/jest-dom@^4.2.4":
+"@testing-library/jest-dom@4.2.4":
   version "4.2.4"
   resolved "https://registry.yarnpkg.com/@testing-library/jest-dom/-/jest-dom-4.2.4.tgz#00dfa0cbdd837d9a3c2a7f3f0a248ea6e7b89742"
   integrity sha512-j31Bn0rQo12fhCWOUWy9fl7wtqkp7In/YP2p5ZFyRuiiB9Qs3g+hS4gAmDWONbAHcRmVooNJ5eOHQDCOmUFXHg==
@@ -1363,19 +1363,19 @@
     pretty-format "^24.0.0"
     redent "^3.0.0"
 
-"@testing-library/react@^9.3.2":
-  version "9.5.0"
-  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-9.5.0.tgz#71531655a7890b61e77a1b39452fbedf0472ca5e"
-  integrity sha512-di1b+D0p+rfeboHO5W7gTVeZDIK5+maEgstrZbWZSSvxDyfDRkkyBE1AJR5Psd6doNldluXlCWqXriUfqu/9Qg==
+"@testing-library/react@9.3.2":
+  version "9.3.2"
+  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-9.3.2.tgz#418000daa980dafd2d9420cc733d661daece9aa0"
+  integrity sha512-J6ftWtm218tOLS175MF9eWCxGp+X+cUXCpkPIin8KAXWtyZbr9CbqJ8M8QNd6spZxJDAGlw+leLG4MJWLlqVgg==
   dependencies:
-    "@babel/runtime" "^7.8.4"
-    "@testing-library/dom" "^6.15.0"
-    "@types/testing-library__react" "^9.1.2"
+    "@babel/runtime" "^7.6.0"
+    "@testing-library/dom" "^6.3.0"
+    "@types/testing-library__react" "^9.1.0"
 
-"@testing-library/user-event@^7.1.2":
-  version "7.2.1"
-  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-7.2.1.tgz#2ad4e844175a3738cb9e7064be5ea070b8863a1c"
-  integrity sha512-oZ0Ib5I4Z2pUEcoo95cT1cr6slco9WY7yiPpG+RGNkj8YcYgJnM7pXmYmorNOReh8MIGcKSqXyeGjxnr8YiZbA==
+"@testing-library/user-event@7.1.2":
+  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-7.1.2.tgz#3a71bb8a45a1e08b71a54c9efcee9927f3895e80"
+  integrity sha512-lDyCVxxgX5lrgCa75ELCfWcdEDyfisjqoDIM3YsghQ+lyViIac/qT67qabQ/HmoVxyikFKovjKwWdn3b/oKhZA==
 
 "@types/babel__core@^7.1.0":
   version "7.1.7"
@@ -1523,7 +1523,7 @@
   dependencies:
     pretty-format "^24.3.0"
 
-"@types/testing-library__react@^9.1.2":
+"@types/testing-library__react@^9.1.0":
   version "9.1.3"
   resolved "https://registry.yarnpkg.com/@types/testing-library__react/-/testing-library__react-9.1.3.tgz#35eca61cc6ea923543796f16034882a1603d7302"
   integrity sha512-iCdNPKU3IsYwRK9JieSYAiX0+aYDXOGAmrC/3/M7AqqSDKnWWVv07X+Zk1uFSL7cMTUYzv4lQRfohucEocn5/w==
@@ -2130,6 +2130,11 @@ autoprefixer@^9.6.1:
     num2fraction "^1.2.2"
     postcss "^7.0.27"
     postcss-value-parser "^4.0.3"
+
+await-to-js@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/await-to-js/-/await-to-js-2.1.1.tgz#c2093cd5a386f2bb945d79b292817bbc3f41b31b"
+  integrity sha512-CHBC6gQGCIzjZ09tJ+XmpQoZOn4GdWePB4qUweCaKNJ0D3f115YdhmYVTZ4rMVpiJ3cFzZcTYK1VMYEICV4YXw==
 
 aws-sign2@~0.7.0:
   version "0.7.0"
@@ -4065,7 +4070,7 @@ eslint-plugin-react-hooks@^1.6.1:
   resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-1.7.0.tgz#6210b6d5a37205f0b92858f895a4e827020a7d04"
   integrity sha512-iXTCFcOmlWvw4+TOE8CLWj6yX1GwzT0Y6cUfHHZqWnSk144VmVIRcVGtUAzrLES7C798lmvnt02C7rxaOX1HNA==
 
-eslint-plugin-react@7.19.0, eslint-plugin-react@^7.19.0:
+eslint-plugin-react@7.19.0:
   version "7.19.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.19.0.tgz#6d08f9673628aa69c5559d33489e855d83551666"
   integrity sha512-SPT8j72CGuAP+JFbT0sJHOB80TX/pu44gQ4vXH/cq+hQTiY2PuZ6IHkqXJV6x1b28GDdo1lbInjKUrrdUf0LOQ==
@@ -4118,7 +4123,7 @@ eslint-visitor-keys@^1.0.0, eslint-visitor-keys@^1.1.0:
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-1.1.0.tgz#e2a82cea84ff246ad6fb57f9bde5b46621459ec2"
   integrity sha512-8y9YjtM1JBJU/A9Kc+SbaOV4y29sSWckBwMHa+FGtVj5gN/sbnKDf6xJUl+8g7FAij9LVaP8C24DUiH/f/2Z9A==
 
-eslint@^6.6.0, eslint@^6.8.0:
+eslint@6.8.0, eslint@^6.6.0:
   version "6.8.0"
   resolved "https://registry.yarnpkg.com/eslint/-/eslint-6.8.0.tgz#62262d6729739f9275723824302fb227c8c93ffb"
   integrity sha512-K+Iayyo2LtyYhDSYwz5D5QdWw0hCacNzyq1Y821Xna2xSJj7cijoLLYmLxTQgcgZ9mC61nryMy9S7GRbYpI5Ig==
@@ -7646,7 +7651,7 @@ peerjs-js-binarypack@1.0.1:
   resolved "https://registry.yarnpkg.com/peerjs-js-binarypack/-/peerjs-js-binarypack-1.0.1.tgz#80fa2b61c794a6b16d64253700405e476ada29be"
   integrity sha512-N6aeia3NhdpV7kiGxJV5xQiZZCVEEVjRz2T2C6UZQiBkHWHzUv/oWA4myQLcwBwO8LUoR1KWW5oStvwVesmfCg==
 
-peerjs@^1.2.0:
+peerjs@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/peerjs/-/peerjs-1.2.0.tgz#63a0ac54b3b79bba8502e31ecb5bcb4688e1bdd6"
   integrity sha512-+ZWByKOYDDzpLefueY2drUFC5U2UVv947NswaYQb6o4twKiRcoDLdcgwfIQHjhcBWwvVUhYyhGIdSJy29+4a9Q==
@@ -8432,7 +8437,7 @@ postcss@^7, postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, postcss@^7.0.16, po
     source-map "^0.6.1"
     supports-color "^6.1.0"
 
-pre-commit@^1.2.2:
+pre-commit@1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/pre-commit/-/pre-commit-1.2.2.tgz#dbcee0ee9de7235e57f79c56d7ce94641a69eec6"
   integrity sha1-287g7p3nI15X95xW186UZBpp7sY=
@@ -8725,7 +8730,7 @@ react-dev-utils@^10.2.1:
     strip-ansi "6.0.0"
     text-table "0.2.0"
 
-react-dom@^16.13.1:
+react-dom@16.13.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.13.1.tgz#c1bd37331a0486c078ee54c4740720993b2e0e7f"
   integrity sha512-81PIMmVLnCNLO/fFOQxdQkvEq/+Hfpv24XNJfpyZhTRfO0QcmQIF/PgCa1zCOj2w1hrn12MFLyaJ/G0+Mxtfag==
@@ -8805,7 +8810,7 @@ react-scripts@3.4.1:
   optionalDependencies:
     fsevents "2.1.2"
 
-react@^16.13.1:
+react@16.13.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react/-/react-16.13.1.tgz#2e818822f1a9743122c063d6410d85c1e3afe48e"
   integrity sha512-YMZQQq32xHLX0bz5Mnibv1/LHb3Sqzngu7xstSM+vrkE5Kzr9xE0yMByK5kMoTK30YVJE61WfbxIFFvfeDKT1w==
