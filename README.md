@@ -11,13 +11,15 @@ abrir 2 tabs en la terminal. La idea es que en un tab simulemos al doctor y en e
 En el primer tab correr 
 
 ```bash
-REACT_APP_ROL=doctor yarn start
+REACT_APP_ROL=doctor yarn start // Distribuciones UNIX
+set "REACT_APP_ROL=doctor" && yarn start // Windows
 ```
 
 En el segundo tab correr
 
 ```bash
-REACT_APP_ROL=paciente yarn start
+REACT_APP_ROL=paciente yarn start // Distribuciones UNIX
+set "REACT_APP_ROL=paciente" && yarn start // Windows
 ```
 
 Si sale el siguiente mensaje `Would you like to run the app on another port instead?` escribir `y` y presionar `enter`.
