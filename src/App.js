@@ -22,6 +22,7 @@ class App extends Component {
     };
 
     this.sendMessage = this.sendMessage.bind(this);
+    this.hangUp = this.hangUp.bind(this);
     this.connectPatientToPeer = this.connectPatientToPeer.bind(this);
     this.startCall = this.startCall.bind(this);
     this.answerCall = this.answerCall.bind(this);
@@ -81,6 +82,10 @@ class App extends Component {
 
     const isDoctor = this.isDoctor();
     conn.send(`Mensaje de ${isDoctor ? 'doctor' : 'paciente'}`);
+  }
+
+  hangUp() {
+    peer.destroy();
   }
 
   connectPatientToPeer() {
@@ -300,6 +305,7 @@ class App extends Component {
         {this.buildSessionIdLabel()}
         {this.buildPatientConnectionForm()}
         <button style={styles.buttons} onClick={this.sendMessage}>{`Enviar mensaje de prueba`}</button>
+        <button style={styles.buttons} onClick={this.hangUp}>{`Colgar`}</button>
         {this.buildCallButton()}
         {this.buildAnswerButton()}
         <video controls></video>
