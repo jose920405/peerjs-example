@@ -33,7 +33,9 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-
+    if (call) {
+      call.close();
+    }
   }
 
   componentDidUpdate() {
@@ -47,38 +49,26 @@ class App extends Component {
 
   async connectMediaDevices() {
     return new Promise((resolve, reject) => {
-      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-
-      if (!navigator.getUserMedia) {
-        return reject('getUserMedia not supported');
-      }
-
-      const mediaParams = {
-        audio: true,
-        // video: {
-        //   width: 1280, 
-        //   height: 720,
-        // }
+      const constraints = {
+        video: true,
+        audio: true
       };
 
-      return navigator.getUserMedia(mediaParams,
-        (stream) => {
-          resolve(stream);
-        },
-        (err) => {
-          console.log('64 err >>> ', err);
-          reject(`The following error occurred: ${err.message}`);
-        });
+      navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+        resolve(stream);
+      }).catch((error) => {
+        reject(`The following error occurred: ${error.message}`);
+      });
     });
   }
 
-  loadAudioStream(stream) {
-    var audio = document.querySelector('audio');
-    audio.src = window.URL.createObjectURL(stream);
-    audio.onloadedmetadata = (e) => {
+  loadVideoStream(stream) {
+    var video = document.querySelector('video');
+    video.srcObject = stream;
+    video.onloadedmetadata = (e) => {
       console.log('79 e >>> ', e);
-      console.log('now playing the audio');
-      audio.play();
+      console.log('now playing the video');
+      video.play();
     };
   }
   //#endregion functions
@@ -113,9 +103,6 @@ class App extends Component {
     if (!conn) {
       return alert('Todavía no se ha establecido una conexión');
     }
-
-    console.log('90 stream >>> ', stream);
-    console.log('91 conn >>> ', conn);
 
     const patientPeer = conn.peer;
     call = peer.call(patientPeer, stream);
@@ -231,9 +218,10 @@ class App extends Component {
       }
 
       console.log(stream);
-      me.loadAudioStream(stream);
+      me.loadVideoStream(stream);
     });
 
+    // Only Necessary
     call.on('close', () => {
       if (isDoctor) {
         console.log('210 CALL CLOSED Doctor >>>>>>>>> ');
@@ -314,7 +302,7 @@ class App extends Component {
         <button style={styles.buttons} onClick={this.sendMessage}>{`Enviar mensaje de prueba`}</button>
         {this.buildCallButton()}
         {this.buildAnswerButton()}
-        <audio controls></audio>
+        <video controls></video>
       </div>
     );
   }
