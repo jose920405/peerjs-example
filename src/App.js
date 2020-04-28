@@ -22,7 +22,7 @@ class App extends Component {
       joinText: null,
       lastPeerId: null,
       buildAnswerButton: null,
-      audioOn: false,
+      audioOn: true,
       videoOn: false,
     };
 
@@ -94,14 +94,17 @@ class App extends Component {
     peer.destroy();
   }
 
-  toggleMedia(k) {
-    console.log('98 k >>> ', k);
+  toggleMedia(streamType, enabled) {
+    console.log('98 streamType >>> ', streamType);
+    console.log('99 enabled >>> ', enabled);
     const audioTracks = globalMediaStream.getAudioTracks();
     console.log('99 audioTracks >>> ', audioTracks);
     if (audioTracks.length > 0) {
-      audioTracks[0].enabled = false;
+      audioTracks[0].enabled = enabled;
     }
     console.log('98 globalMediaStream.getVideoTracks(); >>> ', globalMediaStream.getVideoTracks());
+
+    this.setState({ audioOn: enabled });
 
     // const video = document.querySelector('video');
     // video.srcObject.getTracks().map(t => t.kind == k && t.stop());
