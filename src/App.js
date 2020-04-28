@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+// import { set } from 'lodash';
+
 // Libraries
 import to from 'await-to-js';
 import Peer from 'peerjs';
@@ -10,6 +12,7 @@ import styles from './Styles';
 let peer = null;
 let conn = null;
 let call = null;
+let globalMediaStream = null;
 
 class App extends Component {
   constructor(props) {
@@ -19,6 +22,8 @@ class App extends Component {
       joinText: null,
       lastPeerId: null,
       buildAnswerButton: null,
+      audioOn: false,
+      videoOn: false,
     };
 
     this.sendMessage = this.sendMessage.bind(this);
@@ -34,9 +39,7 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    if (call) {
-      call.close();
-    }
+    this.hangUp();
   }
 
   componentDidUpdate() {
@@ -51,12 +54,13 @@ class App extends Component {
   async connectMediaDevices() {
     return new Promise((resolve, reject) => {
       const constraints = {
-        video: true,
+        // video: true,
         audio: true
       };
 
-      navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
-        resolve(stream);
+      navigator.mediaDevices.getUserMedia(constraints).then((streamInfo) => {
+        globalMediaStream = streamInfo;
+        resolve(streamInfo);
       }).catch((error) => {
         reject(`The following error occurred: ${error.message}`);
       });
@@ -64,7 +68,7 @@ class App extends Component {
   }
 
   loadVideoStream(stream) {
-    var video = document.querySelector('video');
+    const video = document.querySelector('video');
     video.srcObject = stream;
     video.onloadedmetadata = (e) => {
       console.log('79 e >>> ', e);
@@ -85,7 +89,22 @@ class App extends Component {
   }
 
   hangUp() {
+    conn.close();
+    peer.disconnect();
     peer.destroy();
+  }
+
+  toggleMedia(k) {
+    console.log('98 k >>> ', k);
+    const audioTracks = globalMediaStream.getAudioTracks();
+    console.log('99 audioTracks >>> ', audioTracks);
+    if (audioTracks.length > 0) {
+      audioTracks[0].enabled = false;
+    }
+    console.log('98 globalMediaStream.getVideoTracks(); >>> ', globalMediaStream.getVideoTracks());
+
+    // const video = document.querySelector('video');
+    // video.srcObject.getTracks().map(t => t.kind == k && t.stop());
   }
 
   connectPatientToPeer() {
@@ -162,8 +181,10 @@ class App extends Component {
 
       // Workaround for peer.reconnect deleting previous id
       // peer.id = lastPeerId; // Commented because cause an error releated with is only getter value
-      peer._lastServerId = me.state.lastPeerId;
-      peer.reconnect();
+      if (!peer.destroyed) {
+        peer._lastServerId = me.state.lastPeerId;
+        peer.reconnect();
+      }
     });
 
     peer.on('error', (err) => {
@@ -173,6 +194,7 @@ class App extends Component {
 
   connectionListeners() {
     const isDoctor = this.isDoctor();
+    const me = this;
     conn.on('open', () => {
       if (!isDoctor) {
         console.log('************ !!!PACIENTE CONECTADO AL DOCTOR!!!! *********** ');
@@ -198,6 +220,7 @@ class App extends Component {
       } else {
         console.log('Patient Closed ');
       }
+      me.hangUp();
     });
 
     conn.on('error', (err) => {
@@ -207,7 +230,8 @@ class App extends Component {
       } else {
         console.log('Patient error ');
       }
-      alert(err);
+      // alert(err);
+      me.hangUp();
     });
   }
 
@@ -306,6 +330,8 @@ class App extends Component {
         {this.buildPatientConnectionForm()}
         <button style={styles.buttons} onClick={this.sendMessage}>{`Enviar mensaje de prueba`}</button>
         <button style={styles.buttons} onClick={this.hangUp}>{`Colgar`}</button>
+        <button style={styles.buttons} onClick={() => { this.toggleMedia('Audio', !this.state.audioOn); }}>{`Parar Audio`}</button>
+        <button style={styles.buttons} onClick={() => { this.toggleMedia('Video', !this.state.videoOn); }}>{`Parar Video`}</button>
         {this.buildCallButton()}
         {this.buildAnswerButton()}
         <video controls></video>
@@ -316,5 +342,3 @@ class App extends Component {
 }
 
 export default App;
-
-//export default App;
